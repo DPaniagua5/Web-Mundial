@@ -660,6 +660,30 @@ select { font-family: inherit; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
+.flag-img {
+  width: 32px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Tamaño más pequeño en fixture y bracket */
+.fixture-row .flag-img,
+.bracket-team .flag-img {
+  width: 22px;
+  height: 15px;
+}
+
+/* Tamaño grande en match cards */
+.team-flag .flag-img {
+  width: 52px;
+  height: 36px;
+  border-radius: 4px;
+}
+
 /* ─── FOOTER ──────────────────────────────────────────── */
 .site-footer {
   text-align: center;

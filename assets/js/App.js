@@ -13,30 +13,38 @@ const REFRESH_LIVE   = 10_000;   // 10s during live matches
 const NOTIF_HOUR_AM  = 9;        // 09:00 local
 const NOTIF_HOUR_PM  = 22;       // 22:00 local
 
-// Country code → flag emoji helper
-const FLAG_MAP = {
-  'United States': '🇺🇸', 'USA': '🇺🇸', 'Mexico': '🇲🇽', 'Canada': '🇨🇦',
-  'Brazil': '🇧🇷', 'Argentina': '🇦🇷', 'Germany': '🇩🇪', 'France': '🇫🇷',
-  'Spain': '🇪🇸', 'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Portugal': '🇵🇹', 'Netherlands': '🇳🇱',
-  'Belgium': '🇧🇪', 'Italy': '🇮🇹', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴',
-  'Ecuador': '🇪🇨', 'Chile': '🇨🇱', 'Peru': '🇵🇪', 'Venezuela': '🇻🇪',
-  'Paraguay': '🇵🇾', 'Bolivia': '🇧🇴', 'Japan': '🇯🇵', 'South Korea': '🇰🇷',
-  'Australia': '🇦🇺', 'Iran': '🇮🇷', 'Saudi Arabia': '🇸🇦', 'Morocco': '🇲🇦',
-  'Senegal': '🇸🇳', 'Cameroon': '🇨🇲', 'Ghana': '🇬🇭', 'Nigeria': '🇳🇬',
-  'Egypt': '🇪🇬', 'Tunisia': '🇹🇳', 'Algeria': '🇩🇿', 'Croatia': '🇭🇷',
-  'Serbia': '🇷🇸', 'Poland': '🇵🇱', 'Switzerland': '🇨🇭', 'Denmark': '🇩🇰',
-  'Austria': '🇦🇹', 'Wales': '🏴󠁧󠁢󠁷󠁬󠁳󠁿', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Turkey': '🇹🇷',
-  'Czech Republic': '🇨🇿', 'Ukraine': '🇺🇦', 'Hungary': '🇭🇺', 'Greece': '🇬🇷',
-  'Romania': '🇷🇴', 'Slovakia': '🇸🇰', 'Slovenia': '🇸🇮', 'Albania': '🇦🇱',
-  'Costa Rica': '🇨🇷', 'Panama': '🇵🇦', 'Honduras': '🇭🇳', 'El Salvador': '🇸🇻',
-  'Jamaica': '🇯🇲', 'Trinidad and Tobago': '🇹🇹', 'Iceland': '🇮🇸',
-  'Norway': '🇳🇴', 'Sweden': '🇸🇪', 'Finland': '🇫🇮', 'Qatar': '🇶🇦',
-  'South Africa': '🇿🇦', 'Russia': '🇷🇺', 'China': '🇨🇳', 'India': '🇮🇳',
-  'New Zealand': '🇳🇿', 'Guatemala': '🇬🇹', 'Cuba': '🇨🇺',
+// Códigos ISO2 por nombre de país
+const ISO_MAP = {
+  'United States': 'us', 'USA': 'us', 'Mexico': 'mx', 'Canada': 'ca',
+  'Brazil': 'br', 'Argentina': 'ar', 'Germany': 'de', 'France': 'fr',
+  'Spain': 'es', 'England': 'gb-eng', 'Portugal': 'pt', 'Netherlands': 'nl',
+  'Belgium': 'be', 'Italy': 'it', 'Uruguay': 'uy', 'Colombia': 'co',
+  'Ecuador': 'ec', 'Chile': 'cl', 'Peru': 'pe', 'Venezuela': 've',
+  'Paraguay': 'py', 'Bolivia': 'bo', 'Japan': 'jp', 'South Korea': 'kr',
+  'Australia': 'au', 'Iran': 'ir', 'Saudi Arabia': 'sa', 'Morocco': 'ma',
+  'Senegal': 'sn', 'Cameroon': 'cm', 'Ghana': 'gh', 'Nigeria': 'ng',
+  'Egypt': 'eg', 'Tunisia': 'tn', 'Algeria': 'dz', 'Croatia': 'hr',
+  'Serbia': 'rs', 'Poland': 'pl', 'Switzerland': 'ch', 'Denmark': 'dk',
+  'Austria': 'at', 'Wales': 'gb-wls', 'Scotland': 'gb-sct', 'Turkey': 'tr',
+  'Czech Republic': 'cz', 'Ukraine': 'ua', 'Hungary': 'hu', 'Greece': 'gr',
+  'Romania': 'ro', 'Slovakia': 'sk', 'Slovenia': 'si', 'Albania': 'al',
+  'Costa Rica': 'cr', 'Panama': 'pa', 'Honduras': 'hn', 'El Salvador': 'sv',
+  'Jamaica': 'jm', 'Iceland': 'is', 'Norway': 'no', 'Sweden': 'se',
+  'Finland': 'fi', 'Qatar': 'qa', 'South Africa': 'za', 'Guatemala': 'gt',
+  'New Zealand': 'nz', 'China': 'cn', 'India': 'in', 'Morocco': 'ma',
+  'Portugal': 'pt', 'Netherlands': 'nl', 'Trinidad and Tobago': 'tt',
 };
 
-function getFlag(name) {
-  return FLAG_MAP[name] || '🏳️';
+function getFlag(name, size = 32) {
+  const code = ISO_MAP[name];
+  if (!code) return `<span style="font-size:1.4rem">🏳️</span>`;
+  return `<img 
+    src="https://flagcdn.com/w${size}/${code}.png"
+    srcset="https://flagcdn.com/w${size * 2}/${code}.png 2x"
+    alt="${name}"
+    class="flag-img"
+    onerror="this.replaceWith(document.createTextNode('🏳️'))"
+  >`;
 }
 
 function formatTime(isoStr) {
