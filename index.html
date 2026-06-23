@@ -16,6 +16,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/css/index.css">
+  <link rel="icon" type="image/png" href="./assets/img/logo.png">
+
+  <link rel="apple-touch-icon" href="./assets/img/logo.png">
+
 </head>
 <body>
 
@@ -25,6 +29,7 @@
       <div class="brand">
         <img src="/assets/img/logo.png"  alt="Logo">
         <div class="brand-text">
+
           <span class="brand-title">MUNDIAL</span>
           <span class="brand-year">2026</span>
         </div>
@@ -36,6 +41,7 @@
         <button class="nav-btn" data-section="groups">Grupos</button>
         <button class="nav-btn" data-section="bracket">Llaves</button>
         <button class="nav-btn" data-section="scorers">Goleadores</button>
+        <button class="nav-btn" data-section="assists">Asistencias</button>
       </nav>
 
       <button class="notif-btn" id="notifBtn" aria-label="Activar notificaciones" title="Notificaciones de partidos">
@@ -129,6 +135,15 @@
       </div>
       <div class="scorers-table-wrap" id="scorersTable">
         <div class="loading-state"><div class="spinner"></div><p>Cargando goleadores…</p></div>
+      </div>
+    </section>
+
+    <section class="page-section" id="section-assists">
+      <div class="section-header">
+        <h2 class="section-title">Tabla de Asistencias</h2>
+        </div>
+        <div class="scorers-table-wrap" id="assistsTable">
+        <div class="loading-state"><div class="spinner"></div><p>Cargando...</p></div>
       </div>
     </section>
 

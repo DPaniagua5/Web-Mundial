@@ -123,6 +123,7 @@ function render() {
   renderGroups();
   renderBracket();
   renderScorers();
+  renderAssists();
   renderTicker();
   checkLiveMatches();
 }
@@ -390,7 +391,7 @@ function renderBracketMatch(m) {
 function renderScorers() {
   const wrap = document.getElementById('scorersTable');
   if (!state.scorers || state.scorers.length === 0) {
-    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⚽</div><h3>Sin datos</h3><p>La tabla de goleadores estará disponible cuando inicien los partidos.</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">⚽</div><h3>Sin datos</h3></div>';
     return;
   }
 
@@ -401,14 +402,50 @@ function renderScorers() {
         <div class="scorer-name">${getFlag(s.team?.name || '')} ${s.player?.name || '—'}</div>
         <div class="scorer-team">${s.team?.name || ''}</div>
       </td>
-      <td>${s.penalties || 0} pen</td>
-      <td class="scorer-goals">${s.goals || 0}</td>
+      <td style="text-align:center;color:var(--text-mid)">${s.assists ?? 0}</td>
+      <td style="text-align:center;color:var(--text-mid)">${s.penalties ?? 0}</td>
+      <td class="scorer-goals">${s.goals ?? 0}</td>
     </tr>`).join('');
 
   wrap.innerHTML = `
     <table class="scorers-table">
       <thead>
-        <tr><th>#</th><th>Jugador</th><th>Pen.</th><th>Goles</th></tr>
+        <tr><th>#</th><th>Jugador</th><th>Asis.</th><th>Pen.</th><th>Goles</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderAssists() {
+  const wrap = document.getElementById('assistsTable');
+  if (!state.scorers || state.scorers.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><h3>Sin datos</h3></div>';
+    return;
+  }
+
+  const sorted = [...state.scorers]
+    .filter(s => (s.assists ?? 0) > 0)
+    .sort((a, b) => (b.assists ?? 0) - (a.assists ?? 0));
+
+  if (sorted.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><h3>Sin asistencias registradas aún</h3></div>';
+    return;
+  }
+
+  const rows = sorted.map((s, i) => `
+    <tr>
+      <td class="scorer-rank ${i < 3 ? 'top' : ''}">${i + 1}</td>
+      <td>
+        <div class="scorer-name">${getFlag(s.team?.name || '')} ${s.player?.name || '—'}</div>
+        <div class="scorer-team">${s.team?.name || ''}</div>
+      </td>
+      <td style="text-align:right;font-family:var(--font-display);font-size:1.6rem;color:var(--sky-light)">${s.assists ?? 0}</td>
+    </tr>`).join('');
+
+  wrap.innerHTML = `
+    <table class="scorers-table">
+      <thead>
+        <tr><th>#</th><th>Jugador</th><th>Asistencias</th></tr>
       </thead>
       <tbody>${rows}</tbody>
     </table>`;
