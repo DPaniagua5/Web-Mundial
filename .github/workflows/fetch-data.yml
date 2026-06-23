@@ -2,10 +2,12 @@ name: Fetch World Cup 2026 Data
 
 on:
   schedule:
-    # Every 5 minutes during match hours (UTC), every 30 min otherwise
-    - cron: '*/5 12-23 * * *'   # Every 5 min, 12:00-23:59 UTC (6am-5pm GT)
-    - cron: '*/30 0-11 * * *'   # Every 30 min, 00:00-11:59 UTC
-  workflow_dispatch:             # Manual trigger
+    - cron: '*/5 12-23 * * *'
+    - cron: '*/30 0-11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   fetch-wc-data:
@@ -21,34 +23,22 @@ jobs:
           FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
         run: |
           BASE="https://api.football-data.org/v4"
-          WC_ID="2000"   # FIFA World Cup
-          
+          WC_ID="2000"
+
           fetch() {
             curl -sf -H "X-Auth-Token: $FOOTBALL_API_KEY" "$1"
           }
-          
+
           mkdir -p data
 
-          # Matches (all)
-          fetch "$BASE/competitions/$WC_ID/matches" > data/matches.json 2>/dev/null || \
-            echo '{"matches":[]}' > data/matches.json
+          fetch "$BASE/competitions/$WC_ID/matches"         > data/matches.json   || echo '{"matches":[]}' > data/matches.json
+          fetch "$BASE/competitions/$WC_ID/standings"       > data/standings.json || echo '{"standings":[]}' > data/standings.json
+          fetch "$BASE/competitions/$WC_ID/teams"           > data/teams.json     || echo '{"teams":[]}' > data/teams.json
+          fetch "$BASE/competitions/$WC_ID/scorers?limit=20" > data/scorers.json  || echo '{"scorers":[]}' > data/scorers.json
 
-          # Standings / group tables
-          fetch "$BASE/competitions/$WC_ID/standings" > data/standings.json 2>/dev/null || \
-            echo '{"standings":[]}' > data/standings.json
-
-          # Teams
-          fetch "$BASE/competitions/$WC_ID/teams" > data/teams.json 2>/dev/null || \
-            echo '{"teams":[]}' > data/teams.json
-
-          # Scorers
-          fetch "$BASE/competitions/$WC_ID/scorers?limit=20" > data/scorers.json 2>/dev/null || \
-            echo '{"scorers":[]}' > data/scorers.json
-
-          # Write last-updated timestamp
           echo "{\"updated\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > data/meta.json
 
-          echo "Data fetched at $(date -u)"
+          echo "Data fetched at $(date -u +%H:%M)"
 
       - name: Commit updated data
         run: |
@@ -58,6 +48,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: update WC2026 data [$(date -u +%H:%M UTC)]"
+            git commit -m "chore: update WC2026 data"
             git push
           fi
